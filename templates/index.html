@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ title }}</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><main><header><span class="eyebrow">AMAZON US · LOCAL PROTOTYPE</span><h1>{{ title }}</h1><p>选择合成样例或上传 CSV / JSON。结果仅作草稿和建议，不执行外部操作。</p></header>
+<section class="panel controls"><label>内置样例<select id="example"><option value="">请选择</option></select></label><label>上传文件<input id="file" type="file" accept=".csv,.json"></label><button id="run">运行 Agent</button><span id="status"></span></section>
+<section class="grid"><article class="panel"><h2>本次结果</h2><div id="summary" class="empty">尚未运行</div><pre id="result"></pre></article><article class="panel"><h2>历史记录</h2><div id="history" class="empty">暂无记录</div></article></section></main>
+<script>
+const $=id=>document.getElementById(id);
+async function json(url,options){const r=await fetch(url,options);const b=await r.json();if(!r.ok)throw new Error(b.detail||'请求失败');return b}
+async function load(){const examples=await json('/api/examples');examples.forEach(x=>$('example').insertAdjacentHTML('beforeend',`<option value="${x.id}">${x.label}</option>`));await history()}
+async function history(){const rows=await json('/api/runs');$('history').innerHTML=rows.length?rows.map(x=>`<button class="history" onclick="show('${x.run_id}')"><b>${x.input_summary}</b><small>${new Date(x.created_at).toLocaleString()} · ${Math.round(x.confidence*100)}%</small></button>`).join(''):'暂无记录'}
+async function show(id){render(await json('/api/runs/'+id))}
+function render(x){$('summary').innerHTML=`<b>${x.input_summary}</b><span class="badge ${x.needs_human_review?'warn':'ok'}">${x.needs_human_review?'需人工复核':'可供参考'}</span><p>${x.steps.map(s=>s.name+'：'+s.detail).join('<br>')}</p><p>${x.warnings.join('<br>')}</p><a href="/api/runs/${x.run_id}/export">导出 JSON</a>`;$('result').textContent=JSON.stringify(x.result,null,2)}
+$('run').onclick=async()=>{try{$('status').textContent='运行中…';let body={example:$('example').value||null};const f=$('file').files[0];if(f)body={file_name:f.name,file_content:await f.text()};render(await json('/api/runs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}));await history();$('status').textContent='完成'}catch(e){$('status').textContent=e.message}}
+load();</script></body></html>
+
