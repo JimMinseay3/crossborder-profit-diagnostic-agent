@@ -1,13 +1,22 @@
-# Amazon Profit Diagnostic Agent
+![Profit Diagnostic Agent dashboard cover](docs/assets/hero.svg)
 
-> Recalculate ecommerce profit deterministically and explain where margin is being lost.
+# Profit Diagnostic Agent
+
+### Margin control room for Amazon operators
 
 [![CI](https://github.com/JimMinseay3/crossborder-profit-diagnostic-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/JimMinseay3/crossborder-profit-diagnostic-agent/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.136%2B-009688?logo=fastapi&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Money](https://img.shields.io/badge/money_math-Decimal-2ea66f)
+![Currency](https://img.shields.io/badge/currency-USD-d6a84b)
+![Audit](https://img.shields.io/badge/audit-SQLite-4f8a70)
+![License](https://img.shields.io/badge/license-MIT-1e5746)
+
+| Reconcile | Diagnose | Explain |
+|:---:|:---:|:---:|
+| 逐单复算所有费用 | 找出利润流失点 | 给出可追溯行动建议 |
 
 利润异常诊断 Agent 将订单收入、退款、采购成本、Amazon 费用、广告费和物流费还原成按订单、SKU、日期可复算的 USD 利润账。所有金额使用确定性 `Decimal` 计算；模型只可增强解释，绝不参与财务数值计算。
+
+> **Financial integrity contract** — 数字由代码计算，解释可以由模型增强；模型永远不能覆盖金额、公式或异常阈值。
 
 ## 核心能力
 
@@ -118,6 +127,12 @@ python -m pytest -q
 - 多币种及汇兑损益拆分。
 - 可配置异常阈值、预算和类目基线。
 - 周期对比、贡献利润和现金流预测。
+
+## Project
+
+- [Changelog](CHANGELOG.md)
+- [Contributing guide](CONTRIBUTING.md)
+- [MIT License](LICENSE)
 
 ## License
 
